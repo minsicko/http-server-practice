@@ -98,7 +98,7 @@ const httpRequestListener = function (request, response) {
         } // end if (method === 'POST')
 
         else if (method === 'GET') { // start else if (method === 'GET')
-            if (url === '/getFeed') {
+            if (url === '/getFeed') { // start if (url === '/getFeed')
                 let data = []
                 for (i=0; i<users.length; i++) {
                 data.push({
@@ -112,27 +112,39 @@ const httpRequestListener = function (request, response) {
                 }
                 response.writeHead(200, {'Content-Type' : 'application/json'});
                 response.end(JSON.stringify({"data" : data}))
-            }
+            } // end if (url === '/getFeed')
         } // end else if (method === 'GET')
 
         else if ( method === "PATCH" ) { // start else if (method === 'PATCH')
+            if (url === '/patchurl') { // start if (url === '/patchurl')
+                let patchIndex = 1-1 ; // where the n in n-1 is the userId
+                let patchInfo = "노드" // patch to this variable
+                posts[patchIndex].content = '노드'; // patch data
 
-            let patchIndex = 1-1 ; // where the n in n-1 is the userId
-            let patchInfo = "노드" // patch to this variable
-            posts[patchIndex].content = '노드'; // patch data
+                    data = {
+                        "userID" : users[patchIndex].id,
+                        "userName" : users[patchIndex].name,
+                        "postingId" : posts[patchIndex].id,
+                        "postingTitle" : posts[patchIndex].title,
+                        "postingContent" : patchInfo, //posts[patchIndex].content     // key that needs to be patched
+                        "postingImageUrl" : posts[patchIndex].imageurl,
+                    }
 
-                data = {
-                    "userID" : users[patchIndex].id,
-                    "userName" : users[patchIndex].name,
-                    "postingId" : posts[patchIndex].id,
-                    "postingTitle" : posts[patchIndex].title,
-                    "postingContent" : patchInfo, //posts[patchIndex].content     // key that needs to be patched
-                    "postingImageUrl" : posts[patchIndex].imageurl,
-                }
-
-                response.writeHead(200, {'Content-Type' : 'application/json'});
-                response.end(JSON.stringify({"data" : data}))
+                    response.writeHead(200, {'Content-Type' : 'application/json'});
+                    response.end(JSON.stringify({"data" : data}))
+            } // end if (url === "patchurl")
         } // end else if (method === 'PATCH')
+
+        else if ( method === "DELETE" ) { // start else if (method === 'DELETE')
+            if (url === '/deletePosts') {
+                posts.splice(0,1); //where 0 is the INDEX of POST TO DELETE
+
+                // view post to see if deleted successfully.
+                response.writeHead(200, {'Content-Type' : 'application/json'});
+                //response.end(JSON.stringify({"deletedPostArray" : posts}))
+                response.end(JSON.stringify({"message" : "postingDeleted"}))
+            }
+        } // end else if (method === 'DELETE')
 };
 
 
