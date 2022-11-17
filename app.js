@@ -1,3 +1,4 @@
+
 const http = require('http') // import module
 const server = http.createServer(); // create server
 
@@ -52,8 +53,8 @@ const posts = [ // fixed posts info
 
 const httpRequestListener = function (request, response) {
     const { url, method } = request
-        if (method === 'POST') { // start if POST method
-            if (url === '/users/signup') {
+        if (method === 'POST') { // start if (method === 'POST')
+            if (url === '/users/signup') { //start if (url==='/users/signup')
                 let body = '';
                 request.on('data', (data) => {
                     body += data;
@@ -72,10 +73,9 @@ const httpRequestListener = function (request, response) {
                     response.writeHead(200, {'Content-Type' : 'application/json'});
                     response.end(JSON.stringify({"users" : users}))
                 })
-            } //end if url === /user/signup
+            } //end if (url === /user/signup)
 
-            // POST-ing a post
-            else if (url === '/posts/posting') { // start else if posting
+            else if (url === '/posts/posting') { // start else if ('/post/posting')
                 let body = '';
                 request.on('data', (data) => {
                     body += data;
@@ -94,10 +94,10 @@ const httpRequestListener = function (request, response) {
                     response.writeHead(200, {'Content-Type' : 'application/json'});
                     response.end(JSON.stringify({"posts" : posts}))
                 })
-            } // end if url === post/posting
-        } // end if method === POST
+            } // end else if (url === post/posting)
+        } // end if (method === 'POST')
 
-        else if (method === 'GET') { // start if GET method
+        else if (method === 'GET') { // start else if (method === 'GET')
             if (url === '/getFeed') {
                 let data = []
                 for (i=0; i<users.length; i++) {
@@ -113,9 +113,32 @@ const httpRequestListener = function (request, response) {
                 response.writeHead(200, {'Content-Type' : 'application/json'});
                 response.end(JSON.stringify({"data" : data}))
             }
-        }
-}
-;
+        } // end else if (method === 'GET')
+
+        else if ( method === "PATCH" ) { // start else if (method === 'PATCH')
+
+            let patchIndex = 1-1 ; // where the n in n-1 is the userId
+            let patchInfo = "노드" // patch to this variable
+            posts[patchIndex].content = '노드'; // patch data
+
+                data = {
+                    "userID" : users[patchIndex].id,
+                    "userName" : users[patchIndex].name,
+                    "postingId" : posts[patchIndex].id,
+                    "postingTitle" : posts[patchIndex].title,
+                    "postingContent" : patchInfo, //posts[patchIndex].content     // key that needs to be patched
+                    "postingImageUrl" : posts[patchIndex].imageurl,
+                }
+
+                response.writeHead(200, {'Content-Type' : 'application/json'});
+                response.end(JSON.stringify({"data" : data}))
+        } // end else if (method === 'PATCH')
+};
+
+
+
+/////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
 
 server.on("request", httpRequestListener);
 
