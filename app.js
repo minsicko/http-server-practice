@@ -1,7 +1,5 @@
 const http = require('http') // import module
-
 const server = http.createServer(); // create server
-
 
 
 const users = [ // fixed users info
@@ -16,6 +14,14 @@ const users = [ // fixed users info
         name: "Fabian Predovic",
         email: "Connell29@gmail.com",
         password: "password",
+    },
+    {
+        id: 3,
+        name: "new user 1",
+    },
+    {
+        id: 4,
+        name: "new user 2",
     },
 ];
     
@@ -32,11 +38,21 @@ const posts = [ // fixed posts info
         content: "Request/Response와 Stateless!!",
         userId: 1,
     },
+    {
+        id: 3,
+        imageurl: "내용 1",
+        content: "sampleContent3",
+    },
+    {
+        id: 4,
+        imageurl: "내용 2",
+        content: "sampleContent4",
+    },
 ];
 
 const httpRequestListener = function (request, response) {
     const { url, method } = request
-        if (method === 'POST') {
+        if (method === 'POST') { // start if POST method
             if (url === '/users/signup') {
                 let body = '';
                 request.on('data', (data) => {
@@ -56,10 +72,10 @@ const httpRequestListener = function (request, response) {
                     response.writeHead(200, {'Content-Type' : 'application/json'});
                     response.end(JSON.stringify({"users" : users}))
                 })
-            } //end if /user/signup
+            } //end if url === /user/signup
 
             // POST-ing a post
-            else if (url === '/posts/posting') { // else if posting
+            else if (url === '/posts/posting') { // start else if posting
                 let body = '';
                 request.on('data', (data) => {
                     body += data;
@@ -78,9 +94,28 @@ const httpRequestListener = function (request, response) {
                     response.writeHead(200, {'Content-Type' : 'application/json'});
                     response.end(JSON.stringify({"posts" : posts}))
                 })
+            } // end if url === post/posting
+        } // end if method === POST
+
+        else if (method === 'GET') { // start if GET method
+            if (url === '/getFeed') {
+                let data = []
+                for (i=0; i<users.length; i++) {
+                data.push({
+                    "userID" : users[i].id,
+                    "userName" : users[i].name,
+                    "postingId" : posts[i].id,
+                    "postingTitle" : posts[i].title,
+                    "postingContent" : posts[i].content,
+                    "postingImageUrl" : posts[i].imageurl,
+                })
+                }
+                response.writeHead(200, {'Content-Type' : 'application/json'});
+                response.end(JSON.stringify({"data" : data}))
             }
         }
-};
+}
+;
 
 server.on("request", httpRequestListener);
 
