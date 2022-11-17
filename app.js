@@ -56,6 +56,28 @@ const httpRequestListener = function (request, response) {
                     response.writeHead(200, {'Content-Type' : 'application/json'});
                     response.end(JSON.stringify({"users" : users}))
                 })
+            } //end if /user/signup
+
+            // POST-ing a post
+            else if (url === '/posts/posting') { // else if posting
+                let body = '';
+                request.on('data', (data) => {
+                    body += data;
+                });
+
+                // after receiving full stream
+                request.on('end', () => {
+                    const post = JSON.parse(body);
+
+                    posts.push({
+                        id : post.id,
+                        title : post.title,
+                        content : post.content,
+                        userId : post.userId,
+                    })
+                    response.writeHead(200, {'Content-Type' : 'application/json'});
+                    response.end(JSON.stringify({"posts" : posts}))
+                })
             }
         }
 };
